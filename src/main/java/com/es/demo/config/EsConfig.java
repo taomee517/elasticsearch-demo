@@ -15,8 +15,9 @@ public class EsConfig {
     @Bean
     public TransportClient client() throws UnknownHostException {
 
-        //es集群连接
-        TransportAddress node = new  TransportAddress(InetAddress.getByName("127.0.0.1"),9300);
+        //es集群连接 需要在ElasticSearch各个节点的elasticsearch.yml配置transport.tcp.port
+        //引入的elasticsearch-transport版本不能与实际安装版本相差太大
+        TransportAddress node = new  TransportAddress(InetAddress.getByName("hadoop2"),9300);
 //        TransportAddress node1 = new  TransportAddress(InetAddress.getByName("localhost"),8300);
 //        TransportAddress node2 = new  TransportAddress(InetAddress.getByName("localhost"),7300);
 
