@@ -1,0 +1,10 @@
+server:
+  port: 8200
+
+spring:
+  elasticsearch:
+    jest:
+      uris: http://localhost:9200
+
+swagger:
+  enable: true
