@@ -4,6 +4,7 @@ import com.es.demo.beans.BlogModel;
 import com.es.demo.beans.PageEntity;
 import com.es.demo.beans.PageRequest;
 import com.es.demo.jpa.BlogRepository;
+import com.es.demo.service.IBlogSearchService;
 import com.es.demo.utils.PageUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +29,9 @@ public class BlogController {
 
     @Autowired
     private BlogRepository blogRepository;
+
+    @Autowired
+    private IBlogSearchService blogSearchService;
 
     @PostMapping("/add")
     @ApiOperation(value = "新增blog文档")
@@ -134,5 +138,14 @@ public class BlogController {
         Assert.notNull(keyword, "keyword must not be null");
         List<BlogModel> blogs = blogRepository.findByContentCustom(keyword);
         return ResponseEntity.ok(blogs);
+    }
+
+    @PostMapping("/searchByKeyword")
+    @ApiOperation(value = "根据关键字自定义搜索标题，内容匹配的文档")
+    public ResponseEntity<PageEntity<List<BlogModel>>> searchByKeyword(String keyword, @RequestBody PageRequest pageRequest){
+        Assert.notNull(keyword, "keyword must not be null");
+        Assert.isTrue(pageRequest.getIsPaged(), "isPaged must be true!");
+        PageEntity<List<BlogModel>> page = blogSearchService.queryPageByKeyword(keyword,pageRequest);
+        return ResponseEntity.ok(page);
     }
 }
