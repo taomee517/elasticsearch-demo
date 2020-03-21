@@ -34,9 +34,9 @@ import java.util.Map;
 
 
 
-@RestController
 @Slf4j
-@Api(tags={"ElasticSearch增删改查接口"}, description = "first-demo")
+@RestController
+@Api(tags={"ElasticSearch增删改查接口"}, value = "EsController")
 public class EsController {
 
     @Autowired

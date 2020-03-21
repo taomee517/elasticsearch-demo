@@ -40,8 +40,12 @@
             /> <Logger name="org.apache.coyote.http11.Http11NioProtocol" level="WARN"
             /> <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="WARN"
             /> -->
-        <Logger name="org.springframework" level="WARN" />
+        <Logger name="org.springframework" level="INFO" />
         <Logger name="com.demo" level="INFO" />
+        <Logger name="springfox" level="INFO" />
+        <Logger name="org.hibernate" level="INFO" />
+        <Logger name="io.netty" level="INFO" />
+        <Logger name="org.elasticsearch" level="INFO" />
         <Logger name="org.thymeleaf" level="WARN" />
         <Root level="DEBUG">
             <AppenderRef ref="console"></AppenderRef>
