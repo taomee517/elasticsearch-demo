@@ -109,4 +109,21 @@ public class BlogController {
         pageEntity.setData(blogs);
         return ResponseEntity.ok(pageEntity);
     }
+
+
+    @GetMapping("/titleSearch/{keyword}")
+    @ApiOperation(value = "查询标题匹配关键字的文档")
+    public ResponseEntity<List<BlogModel>> titleSearch(@PathVariable(value = "keyword") String keyword){
+        Assert.notNull(keyword, "keyword must not be null");
+        List<BlogModel> blogs = blogRepository.findByTitleLike(keyword);
+        return ResponseEntity.ok(blogs);
+    }
+
+    @GetMapping("/contentSearch/{keyword}")
+    @ApiOperation(value = "查询标题匹配关键字的文档")
+    public ResponseEntity<List<BlogModel>> contentSearch(@PathVariable(value = "keyword") String keyword){
+        Assert.notNull(keyword, "keyword must not be null");
+        List<BlogModel> blogs = blogRepository.findByContentLike(keyword);
+        return ResponseEntity.ok(blogs);
+    }
 }
