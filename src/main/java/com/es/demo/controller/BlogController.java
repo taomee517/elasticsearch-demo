@@ -126,4 +126,13 @@ public class BlogController {
         List<BlogModel> blogs = blogRepository.findByContentLike(keyword);
         return ResponseEntity.ok(blogs);
     }
+
+
+    @GetMapping("/contentSearchCustom/{keyword}")
+    @ApiOperation(value = "自定义查询标题匹配关键字的文档")
+    public ResponseEntity<List<BlogModel>> contentSearchCustom(@PathVariable(value = "keyword") String keyword){
+        Assert.notNull(keyword, "keyword must not be null");
+        List<BlogModel> blogs = blogRepository.findByContentCustom(keyword);
+        return ResponseEntity.ok(blogs);
+    }
 }
