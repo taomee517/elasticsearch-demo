@@ -8,38 +8,64 @@
         <Property name="FILE_NAME">elasticsearch-demo</Property>
         <property name="FILE_PATH" value="log/log4j2" />
     </Properties>
+<!--    <Appenders>-->
+<!--        <Console name="console" target="SYSTEM_OUT" follow="true">-->
+<!--            <PatternLayout>-->
+<!--                <pattern>${PATTERN}</pattern>-->
+<!--                <disableAnsi>false</disableAnsi>-->
+<!--                <noConsoleNoAnsi>false</noConsoleNoAnsi>-->
+<!--            </PatternLayout>-->
+<!--        </Console>-->
+<!--        -->
+<!--        &lt;!&ndash; 文件 每次运行程序会自动清空，由append属性决定 &ndash;&gt;-->
+<!--        <File name="error" fileName="${FILE_PATH}/${FILE_NAME}/sys_error.log" append="false">-->
+<!--            &lt;!&ndash; 指定error 级别的日志 &ndash;&gt;-->
+<!--            <ThresholdFilter level="ERROR" onMatch="ACCEPT"-->
+<!--                             onMismatch="DENY" />-->
+<!--            <PatternLayout>-->
+<!--                <pattern>${PATTERN}</pattern>-->
+<!--            </PatternLayout>-->
+<!--        </File>-->
+<!--        &lt;!&ndash; 滚动文件 &ndash;&gt;-->
+<!--        <RollingFile name="rollingFile" fileName="${FILE_PATH}/${FILE_NAME}/sys-info.log"-->
+<!--                     filePattern="${FILE_PATH}/${FILE_NAME}/sys-info-%d{yyyy-MM-dd}.log">-->
+<!--            <PatternLayout>-->
+<!--                <pattern>${PATTERN}</pattern>-->
+<!--            </PatternLayout>-->
+<!--            &lt;!&ndash; 按大小划分 &ndash;&gt;-->
+<!--            <SizeBasedTriggeringPolicy size="50 MB" />-->
+<!--        </RollingFile>-->
+<!--    </Appenders>-->
+<!--    <Loggers>-->
+<!--        &lt;!&ndash; <Logger name="org.apache.catalina.util.LifecycleBase" level="ERROR"-->
+<!--            /> <Logger name="org.apache.coyote.http11.Http11NioProtocol" level="WARN"-->
+<!--            /> <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="WARN"-->
+<!--            /> &ndash;&gt;-->
+<!--        <Logger name="org.springframework" level="INFO" />-->
+<!--        <Logger name="com.demo" level="INFO" />-->
+<!--        <Logger name="springfox" level="INFO" />-->
+<!--        <Logger name="org.hibernate" level="INFO" />-->
+<!--        <Logger name="io.netty" level="INFO" />-->
+<!--        <Logger name="org.elasticsearch" level="INFO" />-->
+<!--        <Logger name="org.thymeleaf" level="WARN" />-->
+<!--        <Root level="DEBUG">-->
+<!--            <AppenderRef ref="console"></AppenderRef>-->
+<!--            <AppenderRef ref="error"></AppenderRef>-->
+<!--            <AppenderRef ref="rollingFile"></AppenderRef>-->
+<!--        </Root>-->
+<!--    </Loggers>-->
+
     <Appenders>
-        <Console name="console" target="SYSTEM_OUT" follow="true">
-            <PatternLayout>
-                <pattern>${PATTERN}</pattern>
-                <disableAnsi>false</disableAnsi>
-                <noConsoleNoAnsi>false</noConsoleNoAnsi>
-            </PatternLayout>
-        </Console>
-        <!-- 文件 每次运行程序会自动清空，由append属性决定 -->
-        <File name="error" fileName="${FILE_PATH}/${FILE_NAME}/sys_error.log" append="false">
-            <!-- 指定error 级别的日志 -->
-            <ThresholdFilter level="ERROR" onMatch="ACCEPT"
-                             onMismatch="DENY" />
-            <PatternLayout>
-                <pattern>${PATTERN}</pattern>
-            </PatternLayout>
-        </File>
-        <!-- 滚动文件 -->
-        <RollingFile name="rollingFile" fileName="${FILE_PATH}/${FILE_NAME}/sys-info.log"
-                     filePattern="${FILE_PATH}/${FILE_NAME}/sys-info-%d{yyyy-MM-dd}.log">
-            <PatternLayout>
-                <pattern>${PATTERN}</pattern>
-            </PatternLayout>
-            <!-- 按大小划分 -->
-            <SizeBasedTriggeringPolicy size="50 MB" />
-        </RollingFile>
+        <Kafka name ="KAFKA" topic="log4j2-kafka" syncSend="false">  
+          <PatternLayout pattern ="%d{yyyy-MM-dd HH:mm:ss,SSS}:%4p %t (%F:%L) - %m%n"/>  
+          <Property name ="bootstrap.servers" >0.0.0.0:9092</Property> 
+          <Property name ="retries" >3</Property> 
+          <Property name ="linger.ms" >1000</Property> 
+          <Property name ="buffer.memory" > 10485760</Property> 
+        </Kafka>
     </Appenders>
     <Loggers>
-        <!-- <Logger name="org.apache.catalina.util.LifecycleBase" level="ERROR"
-            /> <Logger name="org.apache.coyote.http11.Http11NioProtocol" level="WARN"
-            /> <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="WARN"
-            /> -->
+       <!-- additivity属性作用是在使用当前Logger配置的Appender打印日志 -->
         <Logger name="org.springframework" level="INFO" />
         <Logger name="com.demo" level="INFO" />
         <Logger name="springfox" level="INFO" />
@@ -47,10 +73,11 @@
         <Logger name="io.netty" level="INFO" />
         <Logger name="org.elasticsearch" level="INFO" />
         <Logger name="org.thymeleaf" level="WARN" />
-        <Root level="DEBUG">
-            <AppenderRef ref="console"></AppenderRef>
-            <AppenderRef ref="error"></AppenderRef>
-            <AppenderRef ref="rollingFile"></AppenderRef>
-        </Root>
+
+       <!-- Root表示所有Logger用Root中的Appender打印日志  -->
+       <Root level ="INFO" >
+          <AppenderRef ref="CONSOLE"/>
+          <AppenderRef ref="KAFKA"/>
+       </Root>
     </Loggers>
 </configuration>
