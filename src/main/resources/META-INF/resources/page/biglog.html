@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>微服务ELK日志</title>
+</head>
+<link rel="stylesheet" type="text/css"	href="/static/css/logs.css">
+<link rel="stylesheet" type="text/css" href="/static/easyui/themes/gray/easyui.css">
+<script type="text/javascript" src="/static/layui/layui.all.js"></script>
+<script type="text/javascript" src="/static/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/static/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="/static/easyui/locale/easyui-lang-zh_CN.js"></script>
+
+<body class="easyui-layout-notused" id="top">
+    <p id="back-to-top"><a href="#top"><span></span></a></p>
+    <div data-options="region:'north'" id="north">
+        <form onSubmit="return false;" id="searchForm">
+            <div class="layui-row searchArea">
+                <div class="layui-col-xs12 layui-col-sm4 layui-col-md3">
+                    <div class="layui-row">
+                        <div class="layui-col-xs3 kv-k">
+                            <font style="color: green">日志类型:</font>
+                        </div>
+                        <div class="layui-col-xs9 inline">
+                            <select id="logtype" name="logtype" class="kv-v search-select">
+                            <option value="">全部</option>
+                            <!--  TRACE < DEBUG < INFO < WARN < ERROR -->
+                            <option value="TRACE">TRACE</option>
+                            <option value="DEBUG">DEBUG</option>
+                            <option value="INFO">INFO</option>
+                            <option value="WARN">WARN</option>
+                            <option value="ERROR">ERROR</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs12 layui-col-sm9 layui-col-md9">
+                    <div class="layui-row">
+                        <div class="layui-col-xs1 kv-k">
+                            <font style="color: green">应用组件:</font>
+                        </div>
+                        <div class="layui-col-xs11 inline">
+                            <input id="comids" title="格式为：应用名称--服务器ip(逗号分隔)" name="comids" style="width: 100%"
+                            class="kv-v search-input" type="text" readonly onclick="chooseCom()"
+                            placeholder="请选择需要查询的组件（温馨提示：因日志服务对查询条件数量有上限要求，故单次最大同时支持10个组件查询；如不选择，默认查询全部组件）"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm4 layui-col-md3">
+                    <div class="layui-row">
+                        <div class="layui-col-xs3 kv-k">
+                            <font style="color: green">查询类型:</font>
+                        </div>
+                        <div class="layui-col-xs9 inline">
+                            <select id="viewtype" name="viewtype" class="kv-v search-select" onchange="changeViewType()">
+                                <option value="keyword">关键词</option>
+                                <option value="groupBy">groupBy--分组统计</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm4 layui-col-md3">
+                    <div class="layui-row">
+                        <div class="layui-col-xs3 kv-k">
+                            <font style="color: green">groupBy:</font>
+                        </div>
+                        <div class="layui-col-xs9 inline">
+                            <select id="groupbyfiled" disabled name="groupbyfiled" style="width:;" class="kv-v search-select" onchange="changeViewType()">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm4 layui-col-md3">
+                    <div class="layui-row">
+                        <div class="layui-col-xs3 kv-k">
+                            <font style="color: green">开始时间:</font>
+                        </div>
+                        <div class="layui-col-xs9 inline">
+                            <input id="timestart" name="timestart" type="text" class="kv-v search-input"
+                                   value="startTime"/>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm4 layui-col-md3">
+                    <div class="layui-row">
+                        <div class="layui-col-xs3 kv-k">
+                            <font style="color: green">结束时间:</font>
+                        </div>
+                        <div class="layui-col-xs9 inline">
+                            <input id="timeend" name="timeend" type="text" class="kv-v search-input"
+                                   value="endTime"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm4 layui-col-md3">
+                    <div class="layui-row">
+                        <div class="layui-col-xs3 kv-k" >
+                            <font style="color: green">条件一:</font>
+                        </div>
+                        <div class="layui-col-xs9 inline">
+                            <div class="layui-col-xs7 inline">
+                                <select id="con1Key" name="con1Key" style="width:;" class="search-select" placeholder="请选择第一个条件">
+                                    <option value="">--不选择--</option>
+                                    <option value="thread">线程名</option>
+                                    <option value="location">类名</option>
+                                    <option value="log">日志内容</option>
+                                </select>
+                                <select id="con1Op" name="con1Op" class="search-select" style="width:;">
+                                    <option value="like" checked>包含</option>
+                                    <option value="not like">不包含</option>
+                                </select>
+                            </div>
+                            <div class="layui-col-xs2 inline" style="width: 100%;">
+                                <input id="con1Value" name="con1Value" class="search-input kv-v" type="text" placeholder="条件一的值"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm4 layui-col-md3">
+                    <div class="layui-row">
+                        <div class="layui-col-xs3 kv-k">
+                            <font style="color: green">条件二:</font>
+                        </div>
+                        <div class="layui-col-xs9 inline">
+                            <div class="layui-col-xs7 inline">
+                                <select id="con2Key" name="con2Key" style="width:;" class="search-select" placeholder="请选择第二个条件">
+                                    <option value="">--不选择--</option>
+                                    <option value="thread">线程名</option>
+                                    <option value="location">类名</option>
+                                    <option value="log">日志内容</option>
+                                </select>
+                                <select id="con2Op" name="con2Op" class="search-select" style="width: =;">
+                                    <option value="like" checked>包含</option>
+                                    <option value="not like">不包含</option>
+                                </select>
+                            </div>
+                            <div class="layui-col-xs2 inline" style="width: 100%;">
+                                <input id="con2Value" name="con2Value" class="search-input kv-v" style="width: =" type="text"
+                                       placeholder="条件二的值"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm4 layui-col-md3">
+                    <div class="layui-row">
+                        <div class="layui-col-xs3 kv-k">
+                            <font style="color: green">条件三:</font>
+                        </div>
+                        <div class="layui-col-xs9 inline">
+                            <div class="layui-col-xs7 inline">
+                                <select id="con3Key" name="con3Key" style="width:;" class="search-select" placeholder="请选择第三个条件">
+                                    <option value="">--不选择--</option>
+                                    <option value="thread">线程名</option>
+                                    <option value="location">类名</option>
+                                    <option value="log">日志内容</option>
+                                </select>
+                                <select id="con3Op" name="con3Op" class="search-select" style="width:;">
+                                    <option value=" like" checked>包含</option>
+                                    <option value="not like">不包含</option>
+                                </select>
+                            </div>
+                            <div class="layui-col-xs2 inline" style="width: 100%;">
+                                <input id="con3Value" name="con3Value" class="search-input kv-v" style="width:" type="text"
+                                       placeholder="条件三的值"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs12 layui-col-sm4 layui-col-md3">
+                    <div class="layui-row">
+                        <div class="layui-col-xs3 kv-k">
+                            <font style="color: green">每页展示:</font>
+                        </div>
+                        <div class="layui-col-xs9 inline">
+                            <select id="pageSize" name="pageSize" class="search-select" style="width:;">
+                                <option value="200" checked>200条</option>
+                                <option value="500">500条</option>
+                                <option value="1000">1000条</option>
+                                <option value="2000">2000条</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+        <div id="tb" style="height: auto; padding-bottom: 5px;">
+            <div class="btnDiv">
+                <a href="###" class="easyui-linkbutton" iconCls="icon-search" onclick="QUERYTIME='';show()" id="querier"> 搜索 </a>
+                <a id="pageLeft" href="#" class="easyui-linkbutton" iconCls="icon-left" onclick="pageLeft()"> 上一页 </a>
+                <a id="pageRight" href="#" class="easyui-linkbutton" iconCls="icon-right" onclick="pageRight()"> 下一页 </a>
+                <a id="down" href="#" class="easyui-linkbutton" iconCls="icon-down" style="color: red" onclick="changeOrder(1)">
+                    倒序 </a>
+                <a id="up" href="#" class="easyui-linkbutton" iconCls="icon-up" style="color: gray" onclick="changeOrder(0)"> 顺序</a>
+                <a id="clear" href="#" class="easyui-linkbutton" iconCls="icon-trash" style="color: gray" onclick="clearComponent()" title="如不选择组件，默认查询全部组件"> 清空组件</a>
+            </div>
+        </div>
+    </div>
+    <div region="center" id="content"></div>
+    <div style="display: none;padding-top: 5px;" id="bottomPageDiv">
+        <a id="pageLeft2" href="#" class="easyui-linkbutton" iconCls="icon-left" onclick="pageLeft()"> 上一页 </a>
+        <a id="pageRight2" href="#" class="easyui-linkbutton" iconCls="icon-right" onclick="pageRight()"> 下一页 </a>
+    </div>
+</body>
+</html>
