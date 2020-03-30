@@ -35,13 +35,18 @@ public class AppLogSearchServiceImpl implements IAppLogSearchService {
             boolQueryBuilder.must(termQueryBuilder);
         }
 
-//        if(!StringUtils.isEmpty(appLogQueryDTO.getClassname())){
-//            QueryBuilder matchQuery = QueryBuilders.matchQuery("classname", appLogQueryDTO.getClassname());
-//            boolQueryBuilder.must(matchQuery);
-//        }
-
         if(!StringUtils.isEmpty(appLogQueryDTO.getThread())){
             QueryBuilder matchQuery = QueryBuilders.matchQuery("thread", appLogQueryDTO.getThread());
+            boolQueryBuilder.must(matchQuery);
+        }
+
+//        if(!StringUtils.isEmpty(appLogQueryDTO.getClassname())){
+//            QueryBuilder matchQuery = QueryBuilders.matchQuery("classname", appLogQueryDTO.getClassname());
+//            boolQueryBuilder.filter(matchQuery);
+//        }
+
+        if(!StringUtils.isEmpty(appLogQueryDTO.getContentKeyword())){
+            QueryBuilder matchQuery = QueryBuilders.matchQuery("content", appLogQueryDTO.getContentKeyword());
             boolQueryBuilder.filter(matchQuery);
         }
 

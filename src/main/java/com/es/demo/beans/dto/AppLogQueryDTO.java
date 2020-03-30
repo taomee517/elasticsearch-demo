@@ -7,4 +7,5 @@ public class AppLogQueryDTO {
     private String level;
     private String classname;
     private String thread;
+    private String contentKeyword;
 }
