@@ -11,13 +11,13 @@
     </Properties>
 
     <Appenders>
-<!--        <Console name="STDOUT" target="SYSTEM_OUT" follow="true">-->
-<!--            <PatternLayout>-->
-<!--                <pattern>${STDOUT_PATTERN}</pattern>-->
-<!--                <disableAnsi>false</disableAnsi>-->
-<!--                <noConsoleNoAnsi>false</noConsoleNoAnsi>-->
-<!--            </PatternLayout>-->
-<!--        </Console>-->
+        <Console name="STDOUT" target="SYSTEM_OUT" follow="true">
+            <PatternLayout>
+                <pattern>${STDOUT_PATTERN}</pattern>
+                <disableAnsi>false</disableAnsi>
+                <noConsoleNoAnsi>false</noConsoleNoAnsi>
+            </PatternLayout>
+        </Console>
 
         <!-- 文件 每次运行程序会自动清空，由append属性决定 -->
         <File name="ERROR" fileName="${FILE_PATH}/${APP_NAME}/sys_error.log" append="false">
@@ -66,7 +66,7 @@
         <!--        <AppenderRef ref="ROLLING_FILE"></AppenderRef>-->
        
         <AppenderRef ref="KAFKA"></AppenderRef>
-<!--        <AppenderRef ref="STDOUT"></AppenderRef>-->
+        <AppenderRef ref="STDOUT"></AppenderRef>
        </Root>
     </Loggers>
 </configuration>
